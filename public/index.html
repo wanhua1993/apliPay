@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./javascripts/jquery-1.9.1.min.js"></script>
+    <script src="./javascripts/jquery.qrcode.min.js"></script>
+</head>
+<style>
+    .qrcode {
+        width: 20px;
+        height: 20px;
+        border: 1px solid red;
+        border-radius: 50%;
+    }
+</style>
+<body>
+    <input type="text" class="money">
+    <button class="confirm">支付宝充值</button>
+
+    <input type="text" class='money_1'>
+    <button class="confirm_1">微信充值</button>
+    <div class="qrcode">
+
+    </div>
+    
+</body>
+</html>
+<script>
+    $(function (){
+        $('.confirm').on('click', function (){
+            var money = $('.money').val();
+            $.ajax({
+                url: '/aplipay',
+                type: 'post',
+                data: {
+                    money: money
+                },
+                success: function (data) {
+                    $('body').html(data)
+                }
+            })
+        });
+
+        $('.confirm_1').on('click', function (){
+            var money = $('.money_1').val();
+            $.ajax({
+                url: '/wxPay',
+                type: 'post',
+                data: {
+                    money: money
+                },
+                success: function (data) {
+                    var url = data.value.mweb_url;
+                    // console.log(url);
+
+                    // jQuery('.qrcode').qrcode({
+                    //             render: "canvas", //设置渲染方式，有table和canvas，使用canvas方式渲染性能相对来说比较好
+                    //             text: url, //扫描二维码后显示的内容,可以直接填一个网址，扫描二维码后自动跳向该链接
+                    //             width: 116, //二维码的宽度
+                    //             height: 120
+                    //         })
+                    // location.href= url
+                }
+            })
+        });
+    })
+</script>
