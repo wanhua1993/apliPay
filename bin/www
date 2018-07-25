@@ -8,6 +8,8 @@ var app = require('../app');
 var debug = require('debug')('aplipay:server');
 var http = require('http');
 
+var util = require("util");
+var events = require("events");
 /**
  * Get port from environment and store in Express.
  */
@@ -29,6 +31,22 @@ server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
+//创建构造事件对象的构造函数
+function Stream() {
+  events.EventEmitter.call(this);
+}
+util.inherits(Stream, events.EventEmitter);
+//实例创建事件监听的一个对象
+var elem = new Stream();
+
+var io = require('socket.io')(server);;
+io.on('connection', function (socket) {
+  elem.addListener("event", function () {
+    socket.emit('news', 'success');
+  });
+})
+
+exports.elem = elem;
 /**
  * Normalize a port into a number, string, or false.
  */

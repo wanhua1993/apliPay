@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,28 +10,49 @@
     <script src="./javascripts/jquery.qrcode.min.js"></script>
 </head>
 <style>
-    .qrcode {
+    /* .qrcode {
         width: 20px;
         height: 20px;
         border: 1px solid red;
         border-radius: 50%;
-    }
+    } */
 </style>
-<body>
-    <input type="text" class="money">
-    <button class="confirm">支付宝充值</button>
 
-    <input type="text" class='money_1'>
-    <button class="confirm_1">微信充值</button>
+<body>
+    <div>
+        <p>H5支付</p>
+        <input type="text" class="money">
+        <button class="confirm">支付宝充值</button>
+
+        <input type="text" class='money_1'>
+        <button class="confirm_1">微信充值</button>
+    </div>
+    <div>
+        <p>扫码支付</p>
+        <input type="text" class="money_2">
+        <button class="confirm_2">支付宝扫码支付</button>
+
+        <input type="text" class="money_3">
+        <button class="confirm_3">微信扫码支付</button>
+    </div>
     <div class="qrcode">
 
     </div>
-    
+    <div>
+        <p>app支付</p>
+        <input type="text" class="money_4">
+        <button class="confirm_4">支付宝支付</button>
+    </div>
+    <div class="url_html" style="width: 300px;">
+
+    </div>
 </body>
+
 </html>
+<script src="/socket.io/socket.io.js"></script>
 <script>
-    $(function (){
-        $('.confirm').on('click', function (){
+    $(function () {
+        $('.confirm').on('click', function () {
             var money = $('.money').val();
             $.ajax({
                 url: '/aplipay',
@@ -44,7 +66,7 @@
             })
         });
 
-        $('.confirm_1').on('click', function (){
+        $('.confirm_1').on('click', function () {
             var money = $('.money_1').val();
             $.ajax({
                 url: '/wxPay',
@@ -66,5 +88,82 @@
                 }
             })
         });
-    })
+
+        $('.confirm_2').on('click', function () {
+            var money = $('.money_2').val();
+            $.ajax({
+                url: '/alipay_qrcode',
+                type: 'post',
+                data: {
+                    money: money
+                },
+                success: function (data) {
+                    console.log(data);
+                    if (data.status) {
+                        $('body').html(data.html)
+                    } else {
+                        alert(data.error)
+                    }
+
+                }
+            })
+        });
+
+        $('.confirm_3').on('click', function () {
+            var money = $('.money_3').val();
+            $.ajax({
+                url: '/wxPay_qrcode',
+                type: 'post',
+                data: {
+                    money: money,
+                    type: '微信扫码支付'
+                },
+                success: function (data) {
+                    console.log(data);
+                    var url = data.opts.code_url;
+                    // console.log(url);
+
+                    jQuery('.qrcode').qrcode({
+                        render: "canvas", //设置渲染方式，有table和canvas，使用canvas方式渲染性能相对来说比较好
+                        text: url, //扫描二维码后显示的内容,可以直接填一个网址，扫描二维码后自动跳向该链接
+                        width: 116, //二维码的宽度
+                        height: 120
+                    })
+                    // location.href= url
+                }
+            })
+        });
+
+        $('.confirm_4').on('click', function () {
+            var money = $('.money_4').val();
+            $.ajax({
+                url: '/alipay_app',
+                type: 'post',
+                data: {
+                    money: money
+                },
+                success: function (data) {
+                    $('.url_html').html(data.html)
+                }
+            })
+        });
+
+        // var wh_btn = document.getElementsByClassName('wh_btn')[0];
+        var socket = io('http://localhost:3000');
+        socket.on('news', function (data) {
+            if (data == 'success') {
+                alert('支付成功！')
+            }
+        });
+        var id = Date.now();
+        socket.emit('success', { id: id });
+        // wh_btn.addEventListener('click', function () {
+        //     var val = document.getElementById('val').value;
+        //     var opts = {
+        //         id: id,
+        //         val: val
+        //     }
+        //     socket.emit('private', opts);
+        // })
+    });
 </script>

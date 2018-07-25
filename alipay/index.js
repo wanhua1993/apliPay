@@ -2,10 +2,10 @@
 
 let env = process.env.NODE_ENV || 'development';
 let config = {
-	partner: '2088911869365628', //合作身份者id，以2088开头的16位纯数字
+	partner: '2088102176160699', //合作身份者id，以2088开头的16位纯数字
 	key: '1djzxvce4nc2gavnyf3472tummbz21dp', //安全检验码，以数字和字母组成的32位字符
-	seller_email: 'jishijiyu2015@163.com', //卖家支付宝帐户 必填
-	host: 'http://wap.pdl.jsy86.com' //域名  ？？上线后换过来
+	seller_email: 'nyjhds7128@sandbox.com', //卖家支付宝帐户 必填
+	host: 'http://zhenxing.frpgz1.idcfengye.com' //域名  ？？上线后换过来
 }
 
 var Alipay = require('./alipay').Alipay;
