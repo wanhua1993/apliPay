@@ -2,6 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const utl = require('./utl');
 const qs = require('querystring');
+const Url = require('../../config/config').Url;
+const ali_Pay = require('../../config/config').aliPay;
 
 const alipay_gate_way = 'https://openapi.alipay.com/gateway.do';
 const alipay_gate_way_sandbox = 'https://openapi.alipaydev.com/gateway.do';
@@ -310,4 +312,14 @@ class Alipay {
     }
 }
 
-module.exports = Alipay;
+let ali = new Alipay({
+    appId: ali_Pay.appId,
+    rsaPrivate: path.resolve('./alipay_1/aliPay/rsa_private_key.pem'), // 商户私钥
+    rsaPublic: path.resolve('./alipay_1/aliPay/rsa_public_key.pem'), // 支付宝公钥
+    sandbox: ali_Pay.sandbox, // 是否使用沙箱
+    signType: 'RSA2', 
+    notifyUrl: Url + '/paymentCallback', // 异步回调地址
+    returnUrl: Url + '/payCallback' // 同步回调地址
+  });
+
+module.exports = ali;

@@ -14,7 +14,7 @@ var WXPay = require('wxpay.js').WXPay;
 var WXPayConstants = require('wxpay.js').WXPayConstants;
 var WXPayUtil = require('wxpay.js').WXPayUtil;
 // 支付宝扫码支付
-var AliPay = require('../alipay_1/aliPay/ES6_alipay');
+var ali = require('../alipay_1/aliPay/ES6_alipay');
 var Url = require('../config/config').Url;
 var ali_Pay = require('../config/config').aliPay;
 // 微信扫码支付
@@ -22,11 +22,11 @@ var Pay = require('../alipay_1/ES6_weiChatPay');
 
 try {
   var APPID = 'wx4c78d6d42759e4b1',
-    MCHID = '1260599701',
-    KEY = '75e2099c53f629bdf670c4e5bd218819',
-    CERT_FILE_CONTENT = fs.readFileSync('./utils/apiclient_cert.p12'),
-    CA_FILE_CONTENT = fs.readFileSync('./utils/rootca.pem'),
-    TIMEOUT = 100000; // 毫秒
+      MCHID = '1260599701',
+      KEY = '75e2099c53f629bdf670c4e5bd218819',
+      CERT_FILE_CONTENT = fs.readFileSync('./utils/apiclient_cert.p12'),
+      CA_FILE_CONTENT = fs.readFileSync('./utils/rootca.pem'),
+      TIMEOUT = 100000; // 毫秒
 } catch (err) {
   console.log("--------异常----------");
   console.log(err.message);
@@ -90,15 +90,6 @@ router.post('/wxPay', function (req, res, next) {
   });
 });
 
-var ali = new AliPay({
-  appId: ali_Pay.appId,
-  rsaPrivate: path.resolve('./alipay_1/aliPay/rsa_private_key.pem'),// 商户私钥
-  rsaPublic: path.resolve('./alipay_1/aliPay/rsa_public_key.pem'),
-  sandbox: ali_Pay.sandbox,
-  signType: 'RSA2',
-  notifyUrl: Url + '/paymentCallback',
-  returnUrl: Url + '/payCallback'
-});
 function _get_date_string() {
   var date = moment().format('YYYY MM DD HH mm ss');
   return date.split(' ').join('');
